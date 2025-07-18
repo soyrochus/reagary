@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from pathlib import Path
 
-from .protocols import (
+from ..protocols import (
     ParserProtocol,
     HandlerProtocol,
     ValidatorProtocol,
@@ -13,6 +13,7 @@ from .protocols import (
 
 @dataclass
 class REAgent:
+    """Run the configured parser, handler and validator."""
     parser: ParserProtocol
     handler: HandlerProtocol
     validator: ValidatorProtocol
