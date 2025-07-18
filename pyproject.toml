@@ -5,8 +5,15 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "PyYAML>=6.0",
+  "pyyaml>=6.0.2",
 ]
 
 [project.optional-dependencies]
 test = ["pytest"]
+
+[dependency-groups]
+dev = [
+    "mypy>=1.17.0",
+    "pytest>=8.4.1",
+    "ruff>=0.12.4",
+]

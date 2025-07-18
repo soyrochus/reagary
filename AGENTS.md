@@ -1,115 +1,84 @@
-# Prompt: REAgent Ingestion Engine POC (Python, Protocol-driven, Configurable)
+# AGENTS.md
 
-**Context**
-You are an advanced Python architect and developer. Build a Proof of Concept (POC) for the REAgent Ingestion Engine, demonstrating the complete ingestion pipeline from Parser through Validator. Your implementation must align with the provided high-level architecture, focus on separation of concerns, full configurability, and extensibility.
+## Purpose
 
-**Implementation constraints:**
-
-* Programming language: **Python** (>=3.10)
-* Base module/package: `reagent`
-* Project management via **uv** (for dependencies and scripts)
-* The POC must be executable via a CLI runner, but core logic (everything in `reagent/`) must be entirely decoupled from CLI or web interface code.
-* All critical component boundaries must be defined using clear, well-documented Python **Protocols** (PEP 544 or `typing_extensions.Protocol`).
-* All configuration (pipeline composition, schemas, etc.) is loaded via a separate `reagent_config` module—no hardcoded paths or parameters in the core.
-* Data objects exchanged between components must be Python dataclasses or Pydantic models.
+This file defines repository-wide and directory-specific coding, testing, and documentation policies. All automated code generation agents (including OpenAI Codex) must adhere to these rules unless explicitly overridden by user instruction.
 
 ---
 
-**Scope and Workflow:**
-Your POC must implement the following pipeline (see architecture and sequence diagrams in the reference PDFs):
+## 1. Code Style & Structure
 
-1. **Ingestion Controller**
-
-   * The orchestrator. Accepts an input path and configuration object, initializes the pipeline, and executes it. All dependencies are resolved via `CONFIG`.
-
-2. **Parser**
-
-   * Converts source code (for POC: AngularJS JS+HTML form artifact) into a technology-specific partial data tree (AST or similar).
-   * Must use a clearly defined `ParserProtocol`.
-
-3. **Handler**
-
-   * Receives the parsed data tree and maps it to a normalized, technology-agnostic model (e.g., SES: Schema-Entity-State).
-   * Must use a configurable schema/ontology loaded from config.
-   * Protocol: `HandlerProtocol`.
-
-4. **Validator**
-
-   * Checks the normalized model against the configured schema/ontology and business rules.
-   * Produces a structured report (errors, warnings, suggestions).
-   * Protocol: `ValidatorProtocol` and `ValidationReportProtocol`.
-
-5. **Applier** (optional in POC)
-
-   * Would apply the validated model to a mock/in-memory model repository. For POC, just provide the interface.
-
-6. **Artifacts and Data Flow**
-
-   * All outputs at each stage (parsed tree, model, validation report) must be inspectable and serializable.
+- All code must conform to [Black](https://black.readthedocs.io/) (Python) / [Prettier](https://prettier.io/) (JS/TS) formatting.
+- Variable, function, and class names must be descriptive and use snake_case (Python) or camelCase (JS/TS).
+- No magic numbers: all constants must be named.
+- Functions should be pure unless stateful logic is required.
+- All public funtions/methods/entities should be typed
+- Use Pydantic for data withruntime validation, serialization, or more advanced features.
+- Use @dataclass for simple, lightweight containers.
 
 ---
 
-**Technical Requirements:**
+## 2. Service Architecture
 
-* Package: `reagent`
-* Configuration: `reagent_config` (singleton CONFIG object, loaded at process start)
-* No hardcoded paths or parameters in the library—everything is parameterized or injected.
-* All protocols/interfaces documented with Python docstrings.
-* Well-typed: use type hints everywhere; prefer dataclasses/Pydantic for models.
-* Tests: include a working pipeline test and minimal AngularJS sample artifact.
-* CLI runner: `/cli_runner.py` (only invokes core code, no logic inside).
-* Readme with installation, architecture, and usage.
 
 ---
 
-**Project Structure Example:**
+## 3. Testing & Validation
 
-```
-reagent/
-  __init__.py
-  core.py           # Controller & pipeline orchestrator
-  parser.py         # Parser(s) & protocol
-  handler.py        # Handler(s) & protocol
-  validator.py      # Validator(s) & protocol
-  applier.py        # Applier (optional for POC)
-  models.py         # Dataclasses/Pydantic schemas
-  protocols.py      # Protocol definitions
-  utils.py
-reagent_config/
-  __init__.py       # CONFIG loader (YAML/env)
-tests/
-  test_pipeline.py  # E2E test
-  sample_angularjs_form.js
-  sample_angularjs_form.html
-cli_runner.py
-README.md
-pyproject.toml
-```
+- All new and modified code must include corresponding unit tests (pytest).
+- Run `pytest tests/` (Python) before submitting PRs.
+- Run mypy before submitting PRs.
+- PRs must not reduce code coverage (check with `pytest --cov` or equivalent).
 
 ---
 
-**Acceptance Criteria:**
+## 4. Documentation
 
-* The POC ingests a minimal AngularJS artifact, parses and normalizes it, validates the result, and emits a validation report (no storage, no interface logic in core).
-* All component interfaces are clear, well-documented, and testable.
-* Configuration is external (YAML/JSON, env), never hardcoded in core code.
-* Tests must run and pass with `pytest`.
-* Code is idiomatic Python, extensible for additional technologies.
+- Each public function, class, and API endpoint must have a docstring or JSDoc comment.
+
 
 ---
 
-**Example Usage:**
+## 5. PR/Commit Policy
 
-```python
-from reagent import REAgent
-from reagent_config import CONFIG
-from pathlib import Path
-
-model = REAgent(CONFIG).run_pipeline(Path("tests/sample_angularjs_form.js"))
-report = model.validation_report
-print(report.to_json())
-```
+- PR title must be descriptive and follow the pattern: `[Type] Brief description`
+- Include a "Testing Done" section in PR body, describing validation steps performed.
+- Do not commit commented-out code or unused variables.
 
 ---
 
-**Your deliverable should fully realize these architectural, interface, and modularity principles, enabling future extension and integration as specified in the reference documents.**
+## 6. Linting/CI/Type checking
+
+- All code must pass static analysis using `ruff` (Python).
+- Type checking must be performed using mypy
+- Automated CI checks defined in `.github/workflows/ci.yml` must pass before merging.
+
+---
+
+## 7. Security
+
+- Never commit credentials, secrets, or API keys.
+- All external input must be validated and sanitized.
+
+---
+
+## 8. Directory-specific Rules
+
+<!-- Place additional rules for submodules/services here as needed -->
+# Example:
+# /services/auth:
+# - Use OAuth2 for authentication.
+# - All endpoints require JWT validation.
+- all modules in the /reagent directory, implementing "reagent" as a root module
+- do not use a "src" root
+- tests in the /test directory
+
+---
+
+## 9. Exceptions
+
+If a particular generation request requires deviation from these standards, user/system instructions take precedence and should state the exception explicitly.
+
+---
+
+# End of AGENTS.md
