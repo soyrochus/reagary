@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from .protocols import ParserProtocol, ParsedArtifact
+from ..protocols import ParserProtocol, ParsedArtifact
 
 
 class AngularJSParser(ParserProtocol):

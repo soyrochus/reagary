@@ -4,7 +4,7 @@ import json
 from dataclasses import dataclass
 from typing import List
 
-from .protocols import (
+from ..protocols import (
     ValidatorProtocol,
     ValidationReportProtocol,
     ValidationMessage,

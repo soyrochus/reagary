@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import re
 
-from .protocols import HandlerProtocol, ParsedArtifact, NormalizedModel
+from ..protocols import HandlerProtocol, ParsedArtifact, NormalizedModel
 
 
 class AngularJSFormHandler(HandlerProtocol):
