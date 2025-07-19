@@ -19,6 +19,19 @@ class REAgent:
     validator: ValidatorProtocol
 
     def run_pipeline(self, path: Path) -> NormalizedModel:
+        """Run the full ingestion pipeline on ``path``.
+
+        Parameters
+        ----------
+        path: Path
+            Location of the source artifact to parse.
+
+        Returns
+        -------
+        NormalizedModel
+            The validated model produced from ``path``.
+        """
+
         artifact = self.parser.parse(path)
         model = self.handler.handle(artifact)
         self.validator.validate(model)
